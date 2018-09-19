@@ -9,7 +9,7 @@ import 'dart:html' as dom;
 import 'package:dryice/dryice.dart';
 
 //import "package:console_log_handler/console_log_handler.dart";
-import '../config.dart';
+//import '../config.dart';
 
 import 'utils_test.reflectable.dart';
 
