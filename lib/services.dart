@@ -37,7 +37,12 @@ import 'package:m4d_core/m4d_ioc.dart';
 
 
 /// Most fundamental DATA-Model
+///
+/// IOCContainer().bind(Application).to(MaterialApplication());
 final Application =  Service("m4d_core.Application",ServiceType.Instance);
 
 /// Registration for [DomRenderer]
+///
+/// import 'm4d_core.dart' as core
+/// IOCContainer().bind(DomRenderer).to(core.DomRenderer());
 final DomRenderer = Service("m4d_core.DomRenderer",ServiceType.Instance);

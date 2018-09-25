@@ -104,6 +104,7 @@ main() async {
 
             var object = container.resolve(TestServiceForToJson).as<ToJson>();
             expect(object is ToJson, isTrue);
+            expect(object().containsKey("name"), isTrue);
             expect(object()["name"], "Mike");
 
         }); // end of 'Regist toJson-callback' test
