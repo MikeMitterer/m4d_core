@@ -21,7 +21,7 @@ part of m4d_core;
 
 typedef void MdlCallback(final dom.HtmlElement element);
 
-typedef MdlComponent MdlComponentFactory(final dom.HtmlElement element,final Injector injector);
+typedef MdlComponent MdlComponentFactory(final dom.HtmlElement element,final ioc.IOCContainer iocContainer);
 
 enum SelectorType { CLASS, TAG, ATTRIBUTE }
 
@@ -96,7 +96,7 @@ class MdlConfig<T extends MdlComponent> {
     /// Avoids problems with Components and Helpers like MaterialRipple
     final bool isWidget;
 
-    MdlConfig(this._selector, T componentFactory(final dom.HtmlElement element,final Injector injector),
+    MdlConfig(this._selector, T componentFactory(final dom.HtmlElement element,final ioc.IOCContainer iocContainer),
               { final bool isWidget: false }) : _componentFactory = componentFactory, this.isWidget = isWidget {
 
         Validate.isTrue(T != "dynamic", "Add a type-information to your MdlConfig like new MdlConfig<MaterialButton>()");
@@ -108,8 +108,8 @@ class MdlConfig<T extends MdlComponent> {
 
     Type get type => T;
 
-    MdlComponent newComponent(final dom.HtmlElement element,final Injector injector) {
-        return _componentFactory(element,injector);
+    MdlComponent newComponent(final dom.HtmlElement element,final ioc.IOCContainer iocContainer) {
+        return _componentFactory(element,iocContainer);
     }
 
     //- private -----------------------------------------------------------------------------------
@@ -123,7 +123,7 @@ class MdlConfig<T extends MdlComponent> {
 /// (MdlComponent) properties!
 class MdlWidgetConfig<T extends MdlComponent> extends MdlConfig<T> {
     MdlWidgetConfig(final String selector,
-                    T componentFactory(final dom.HtmlElement element,final Injector injector)) :
+                    T componentFactory(final dom.HtmlElement element,final ioc.IOCContainer iocContainer)) :
                         super(selector, componentFactory, isWidget: true) {
 
     priority = RegistrationPriority.WIDGET;

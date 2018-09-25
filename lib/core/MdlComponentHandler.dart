@@ -26,16 +26,16 @@ class MultipleWidgetException implements Exception {
     MultipleWidgetException([this.message]);
 }
 
-class _ApplicationModule extends Module {
-  final Type _rootContext;
-
-  _ApplicationModule(this._rootContext);
-
-  @override
-  configure() {
-      bind(MaterialApplication).toType(_rootContext).asSingleton();
-  }
-}
+//class _ApplicationModule extends Module {
+//  final Type _rootContext;
+//
+//  _ApplicationModule(this._rootContext);
+//
+//  @override
+//  configure() {
+//      bind(MaterialApplication).toType(_rootContext).asSingleton();
+//  }
+//}
 
 /// Property for the Components JsObject to save/register the component
 const String MDL_COMPONENT_PROPERTY     = "mdlcomponent";
@@ -88,14 +88,31 @@ class MdlComponentHandler {
 
     final Map<String, MdlConfig> _registeredComponents = new HashMap<String, MdlConfig>();
 
-    final List<Module> _modules = new List<Module>();
+    //final List<Module> _modules = new List<Module>();
+
+    final _iocContainer = ioc.IOCContainer();
 
     /// If set to true it
     bool _enableVisualDebugging = false;
 
+    MdlComponentHandler() {
+        // Default registration for Application.
+        // User can overwrite this setting if he registers his own Application
+        bind(service.Application).to(MaterialApplication());
+    }
+
     /// The injector for this module.
-    /// Can also set via [mockComponentHandler]
-    Injector _injector;
+    /// Can also be set via [mockComponentHandler]
+    // Injector _injector;
+
+    /// Used for mocks/Tests
+//    set injector(final Injector value) {
+//        _injector = value;
+//    }
+
+
+
+
 
     /**
      * Registers a class for future use and attempts to upgrade existing DOM.
@@ -115,6 +132,9 @@ class MdlComponentHandler {
             _registeredComponents.putIfAbsent(config.classAsString, () => config);
         }
     }
+
+    /// Binds a IOCItem to it's Data-Model
+    ioc.BindingSyntax bind(final ioc.Service service) => _iocContainer.bind(service);
 
     /**
      * Allows user to be alerted to any upgrades that are performed for a given
@@ -136,16 +156,16 @@ class MdlComponentHandler {
 
 
     /// Upgrades all children for {element} and returns the current Injector
-    Future<Injector> upgradeElement(final dom.HtmlElement element) {
-        Validate.notNull(_injector,"Injector must not be null - did you call run?");
+    Future<void> upgradeElement(final dom.HtmlElement element) {
+        // Validate.notNull(_injector,"Injector must not be null - did you call run?");
         Validate.notNull(element,"Component must not be null!");
 
         return upgradeElements( [ element] );
     }
 
     /// Upgrades a specific list of elements rather than all in the DOM.
-    Future<Injector> upgradeElements(final List<dom.HtmlElement> elements) {
-        Validate.notNull(_injector,"Injector must not be null - did you call run?");
+    Future<void> upgradeElements(final List<dom.HtmlElement> elements) {
+        // Validate.notNull(_injector,"Injector must not be null - did you call run?");
         Validate.notNull(elements,"List of elements must not be null!");
 
         dom.querySelector("html")
@@ -153,7 +173,7 @@ class MdlComponentHandler {
             ..classes.add(_cssClasses.HTML_DART)
             ..classes.remove(_cssClasses.UPGRADED);
 
-            final Future<Injector> future = new Future<Injector>( () {
+            final Future<void> future = new Future<void>( () {
 
                 elements.forEach((final dom.HtmlElement element) {
 
@@ -161,7 +181,7 @@ class MdlComponentHandler {
 
                     _configs.forEach((final MdlConfig config) {
                         _upgradeDom(element,config);
-                        _logger.finer("${config.selector} upgraded with ${config.classAsString}...");
+                        _logger.fine("${config.selector} upgraded with ${config.classAsString}...");
                     });
 
                     element.classes.remove(_cssClasses.UPGRADING);
@@ -174,8 +194,6 @@ class MdlComponentHandler {
             dom.querySelector("html").classes.add(_cssClasses.UPGRADED);
 
             _logger.fine("All components are upgraded...");
-
-            return _injector;
         });
 
         return future;
@@ -234,56 +252,61 @@ class MdlComponentHandler {
      *              });
      *        }
      */
-    Future<MaterialApplication> run( { final enableVisualDebugging: false } ) {
+    Future<T> run<T>( { final enableVisualDebugging: false } ) async {
         final dom.Element body = dom.querySelector("body");
 
         _enableVisualDebugging = enableVisualDebugging;
         //_modules.add(new Module()..bind(DomRenderer));
 
-        _injector = _createInjector();
+        // _injector = _createInjector();
 
-        return upgradeElement(body).then((_) => new Future<MaterialApplication>(() {
-                return _injector.getInstance(MaterialApplication) as MaterialApplication;
-        }));
+        await upgradeElement(body);
+
+//        return upgradeElement(body).then((_) => new Future<MaterialApplication>(() {
+//                return _injector.getInstance(MaterialApplication) as MaterialApplication;
+//        }));
+
+        return application as T;
     }
 
-    /**
-     * In most cases this is your AppController
-     *
-     * Sample:
-     *        @inject
-     *        class AppController {
-     *
-     *        }
-     *
-     *        main() {
-     *        registerMdl();
-     *
-     *        componentFactory().rootContext(AppController).run().then( (final Injector injector) {
-     *                  new AppController();
-     *              });
-     *        }
-     */
-    MdlComponentHandler rootContext(final Type rootContext) {
-        _modules.add(new _ApplicationModule(rootContext));
-        return this;
-    }
 
-    /// Add your App-specific modules
-    MdlComponentHandler addModule(final Module module) {
-        if(_modules.indexOf(module) == -1) {
-            _modules.add(module);
-        }
-        return this;
-    }
+//    /**
+//     * In most cases this is your AppController
+//     *
+//     * Sample:
+//     *        @inject
+//     *        class AppController {
+//     *
+//     *        }
+//     *
+//     *        main() {
+//     *        registerMdl();
+//     *
+//     *        componentFactory().rootContext(AppController).run().then( (final Injector injector) {
+//     *                  new AppController();
+//     *              });
+//     *        }
+//     */
+//    MdlComponentHandler rootContext(final Type rootContext) {
+//        _modules.add(new _ApplicationModule(rootContext));
+//        return this;
+//    }
+//
+//    /// Add your App-specific modules
+//    MdlComponentHandler addModule(final Module module) {
+//        if(_modules.indexOf(module) == -1) {
+//            _modules.add(module);
+//        }
+//        return this;
+//    }
 
-    /// Returns the injector for this module.
-    Injector get injector {
-        if(_injector == null) {
-            _injector = _createInjector();
-        }
-        return _injector;
-    }
+//    /// Returns the injector for this module.
+//    Injector get injector {
+//        if(_injector == null) {
+//            _injector = _createInjector();
+//        }
+//        return _injector;
+//    }
 
     /**
      * Returns your Application-Object.
@@ -311,7 +334,7 @@ class MdlComponentHandler {
      *
      */
     MaterialApplication get application {
-        return injector.getInstance(MaterialApplication);
+        return _iocContainer.resolve<MaterialApplication>(service.Application);
     }
 
     //- private -----------------------------------------------------------------------------------
@@ -435,7 +458,7 @@ class MdlComponentHandler {
             }
 
             try {
-                final MdlComponent component = config.newComponent(element,_injector);
+                final MdlComponent component = config.newComponent(element,_iocContainer);
 
                 component.visualDebugging = _enableVisualDebugging;
                 config.callbacks.forEach((final MdlCallback callback) => callback(element));
@@ -504,13 +527,13 @@ class MdlComponentHandler {
         }
     }
 
-    /**
-     * Creates an injector function that can be used for retrieving services as well as for
-     * dependency injection.
-     */
-    Injector _createInjector() {
-        return new Injector.fromModules(_modules);
-    }
+//    /**
+//     * Creates an injector function that can be used for retrieving services as well as for
+//     * dependency injection.
+//     */
+//    Injector _createInjector() {
+//        return new Injector.fromModules(_modules);
+//    }
 
     /// Downgrades the given {element} with all it's components
     void _deconstructComponent(final dom.HtmlElement element) {

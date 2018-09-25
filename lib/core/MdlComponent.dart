@@ -22,24 +22,7 @@ part of m4d_core;
 abstract class MdlComponent extends Object with MdlEventListener {
     final Logger _logger = new Logger('mdlcore.MdlComponent');
 
-    /**
-     * If you want to you DI define your bindings like this:
-     *      class StyleguideModule extends Module {
-     *          StyleguideModule() {
-     *              bind( Model,toValue: new Model() );
-     *          }
-     *      }
-     *
-     * and use it like the following sample: (in main method)
-     *
-     *     componentFactory().addModule(new StyleguideModule())
-     *          .run().then(( final Injector injector) {
-     *               final Model model = injector.getInstance(Model);
-     *         });
-     *      });
-     *
-     */
-    final Injector injector;
+    final ioc.IOCContainer injector;
 
     /// This is the element witch has the mdl-js- class
     final dom.Element element;

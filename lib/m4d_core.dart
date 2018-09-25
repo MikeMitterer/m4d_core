@@ -24,26 +24,29 @@
 library m4d_core;
 
 import 'dart:html' as dom;
+
 import 'dart:collection';
 import 'dart:async';
 import 'dart:js';
 
 import 'package:logging/logging.dart';
 import 'package:validate/validate.dart';
-import 'package:dryice/dryice.dart';
 
-export 'src/core/annotations.dart';
+import 'core/interfaces.dart';
+import 'services.dart' as service;
+import 'm4d_ioc.dart' as ioc;
 
-//part "src/core/annotations.dart";
-part "src/core/ConvertValue.dart";
-part "src/core/interfaces.dart";
-part "src/core/mock.dart";
-part "src/core/utils.dart";
+export 'core/annotations.dart';
+export 'core/interfaces.dart';
 
-part "src/core/MdlComponent.dart";
-part "src/core/MdlComponentHandler.dart";
-part "src/core/MdlConfig.dart";
-part "src/core/MdlEventListener.dart";
+part "core/utils.dart";
+
+part "core/MdlEventListener.dart";
+
+part "core/MdlComponent.dart";
+part "core/MdlComponentHandler.dart";
+part "core/MdlConfig.dart";
+part 'core/DomRenderer.dart';
 
 abstract class MdlDataConsumer {
     void consume(final data);
@@ -51,9 +54,14 @@ abstract class MdlDataConsumer {
 
 final MdlComponentHandler _componenthandler = new MdlComponentHandler();
 
+MdlComponentHandler componentFactory() => componentHandler();
+
 MdlComponentHandler componentHandler() {
     return _componenthandler;
 }
+
+
+
 
 
 

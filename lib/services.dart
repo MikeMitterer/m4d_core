@@ -16,17 +16,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-     
-library mdl.test.unit.config;
 
-import 'dart:async';
-//import "package:mdl/mdl.dart";
+/// Core-Annotations got it's own library so that it's not DOM-Related.
+///
+/// Makes it better testable.
+///
+///     @Component
+///     class Person {
+///         final String id;
+///         String name;
+///
+///         Person(this.nae) : id = new Uuid().v1();
+///
+///         Person.from(final Person person) : name = person.name, id = person.id;
+///     }
+///
+library m4d_core.services;
 
-//Future prepareMdlTest(Future additionalRegistrations()) async {
-//    registerApplicationComponents();
-//
-//    await additionalRegistrations();
-//
-//    await componentHandler().run();
-//}
-//
+import 'package:m4d_core/m4d_ioc.dart';
+
+
+/// Most fundamental DATA-Model
+final Application =  Service("m4d_core.Application",ServiceType.Instance);
+
+/// Registration for [DomRenderer]
+final DomRenderer = Service("m4d_core.DomRenderer",ServiceType.Instance);

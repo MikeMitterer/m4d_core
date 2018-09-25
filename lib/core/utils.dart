@@ -64,7 +64,9 @@ MdlComponent mdlComponent(final dom.HtmlElement element,final Type type, { final
         if(element.id != null && element.id.isNotEmpty) {
             id = element.id;
         }
-        throw "$element is not a MdlComponent!!! (ID: $id, Classes: ${element.classes}, Dataset: ${element.dataset['upgraded']})";
+        throw "$element is not a MdlComponent!!! "
+            "(ID: $id, Classes: ${element.classes}, "
+            "Dataset: ${element.dataset['upgraded']})";
     }
 
     String typeAsString;
@@ -80,7 +82,8 @@ MdlComponent mdlComponent(final dom.HtmlElement element,final Type type, { final
         // If there is not "type" but more then one components - throw exception!
         final List<String> componentsForElement = (jsElement[MDL_COMPONENT_PROPERTY] as String).split(",");
         if(componentsForElement.length > 1) {
-            throw new WrongComponentTypeException("$element has more than one components registered. ($componentsForElement)\n"
+            throw new WrongComponentTypeException("$element has more than one components registered. "
+            "($componentsForElement)\n"
             "Please specify the requested type.\n"
             "Usually this is a 'MdlComponent.parent' problem...");
         }
@@ -98,7 +101,10 @@ MdlComponent mdlComponent(final dom.HtmlElement element,final Type type, { final
         _listNames(jsElement);
     }
 
-    throw "$element is not a ${typeAsString}-Component!!!\n(ID: ${element.id}, class: ${element.classes})\n"
+    throw "$element is not a ${typeAsString}-Component!!!\n"
+        "- ID: ${element.id}\n"
+        "- classes: ${element.classes}\n"
+        "- attributes: ${element.attributes})\n"
         "These components are available: ${jsElement[MDL_COMPONENT_PROPERTY] as String}";
 }
 

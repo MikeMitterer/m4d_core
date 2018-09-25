@@ -17,7 +17,12 @@
  * limitations under the License.
  */
 
-part of m4d_core;
+library m4d_core.interfaces;
+
+/// Base for all Service-Classes
+///
+/// Mainly used for IOC-Requests
+abstract class M4DService {}
 
 /**
  * Basis for your Application
@@ -41,8 +46,7 @@ part of m4d_core;
  *          });
  *      }
  */
-@inject
-class MaterialApplication {
+class MaterialApplication implements M4DService {
     void run() {}
 }
 
@@ -53,7 +57,6 @@ class MaterialApplication {
  * Sample-Component:
  *      [MaterialModel]
  */
-@inject
 abstract class RefreshableComponent {
     void refresh();
 }
@@ -66,3 +69,4 @@ abstract class RefreshableComponent {
 abstract class HasDynamicParentScope {
     void set parentScope(final Object parent);
 }
+

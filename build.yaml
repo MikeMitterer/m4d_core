@@ -8,6 +8,7 @@ targets:
             - lib/**
             - tool/**
             - test/visual/config.dart
+            - test/unit/core/lib/SlowComponent.dart
         #  - test/unit/directive/**.dart
         options:
           formatted: true

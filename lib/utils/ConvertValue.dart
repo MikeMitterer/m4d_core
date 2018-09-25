@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-part of m4d_core;
+part of m4d_utils;
 
 /// Converts dynamic values to strong-typed values
 class ConvertValue {
@@ -47,7 +47,7 @@ class ConvertValue {
             return value.toInt();
         }
         final String stringvalue = "$value".toLowerCase();
-        return int.parse(stringvalue);
+        return num.parse(stringvalue).toInt();
     }
 
     static double toDouble(final value) {
@@ -58,7 +58,7 @@ class ConvertValue {
             return value.toDouble();
         }
         final String stringvalue = "$value".toLowerCase();
-        return double.parse(stringvalue);
+        return num.parse(stringvalue).toDouble();
     }
 
     /// Removes ' and " around the give value
