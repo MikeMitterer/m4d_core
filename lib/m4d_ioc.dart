@@ -21,16 +21,19 @@ library m4d_ioc;
 
 import 'package:validate/validate.dart';
 
-typedef Map<String,dynamic> ToJson();
+typedef Map<String, dynamic> ToJson();
 
 enum ServiceType {
-    Instance, Function, Json
+    Instance,
+    Function,
+    Json
 }
 
 abstract class IOCModule {
     BindingSyntax bind(final Service service) => IOCContainer().bind(service);
-    
+
     configure();
+
     List<IOCModule> get dependsOn => <IOCModule>[];
 
     void _resolveDependencies() {
@@ -45,7 +48,7 @@ class Service {
     final String name;
     final ServiceType type;
 
-    Service(this.name,this.type);
+    Service(this.name, this.type);
 
     @override
     bool operator ==(Object other) =>
@@ -65,15 +68,15 @@ class Service {
 class IOCContainer {
     static IOCContainer _singleton;
 
-    final _services = Map<Service,dynamic>();
+    final _services = Map<Service, dynamic>();
 
     factory IOCContainer.bindModules(final List<IOCModule> modules) {
         Validate.notNull(modules);
 
-        if(_singleton == null) {
+        if (_singleton == null) {
             _singleton = IOCContainer._private();
         }
-        
+
         modules.forEach((final IOCModule module) => module?._resolveDependencies());
 
         return _singleton;
@@ -87,7 +90,7 @@ class IOCContainer {
         return BindingSyntax._private(service, this);
     }
 
-    T resolve<T>(final Service service) => _services[service] as T;
+    ResolveSyntax resolve(final Service service) => ResolveSyntax(_services[service]);
 
     IOCContainer._private();
 
@@ -97,19 +100,19 @@ class IOCContainer {
         Validate.isTrue(service.type == ServiceType.Instance);
         Validate.isTrue(implementation is! Type,
             "You must bind a concrete class to '${service.name}', "
-            "not a type! ($implementation)");
+                "not a type! ($implementation)");
 
         _services[service] = implementation;
     }
 
-    void _bindFunction(final Service service, final Function function) {
+    void _bindFunction<R>(final Service service, R callback()) {
         Validate.notNull(service);
-        Validate.notNull(function);
+        Validate.notNull(callback);
         Validate.isTrue(service.type == ServiceType.Function);
-        Validate.isTrue(function is Function);
+        Validate.isTrue(callback is Function);
         //Validate.isInstance(instanceCheck<Function>(),function);
 
-        _services[service] = function;
+        _services[service] = callback;
     }
 
     void _bindToJson(final Service service, final ToJson callback) {
@@ -123,6 +126,7 @@ class IOCContainer {
     }
 
     void unregister(final Service service) => _services.remove(service);
+
     void clear() => _services.clear();
 
     int get nrOfServices => _services.length;
@@ -133,9 +137,20 @@ class BindingSyntax {
     IOCContainer _container;
 
     void to(final Object implementation) => _container._bindInstance(_service, implementation);
-    void toFunction(final Function function) => _container._bindFunction(_service, function);
-    void toJson(final ToJson callback) => _container._bindToJson(_service, callback);
+
+    void toFunction<R>(R callback()) => _container._bindFunction<R>(_service, callback);
+
+    void toJson(ToJson callback) => _container._bindToJson(_service, callback);
 
     BindingSyntax._private(this._service, this._container);
 }
 
+class ResolveSyntax {
+    final _data;
+
+    ResolveSyntax(this._data) { Validate.notNull(_data); }
+
+    T as<T>([ T converter(final data) ]) => converter == null ? _data as T : converter(_data);
+
+    dynamic get untyped => _data;
+}

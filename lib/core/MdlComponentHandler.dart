@@ -334,7 +334,7 @@ class MdlComponentHandler {
      *
      */
     MaterialApplication get application {
-        return _iocContainer.resolve<MaterialApplication>(service.Application);
+        return _iocContainer.resolve(service.Application).as<MaterialApplication>();
     }
 
     //- private -----------------------------------------------------------------------------------
