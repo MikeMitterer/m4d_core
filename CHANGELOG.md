@@ -1,5 +1,5 @@
 # Change Log for m4d_core
-Material Design Lite for Dart
+Material Design 4 Dart
 
 ## [Unreleased](http://github.com/mikemitterer/m4d_core/compare/v0.1...HEAD)
 
