@@ -6,7 +6,6 @@ import 'dart:html' as dom;
 import 'package:test/test.dart';
 
 import 'package:m4d_core/m4d_core.dart';
-import 'package:m4d_core/m4d_utils.dart';
 import 'package:m4d_core/m4d_ioc.dart' as ioc;
 //import 'package:m4d_core/m4d_mock.dart' as mdlmock;
 //import 'package:mdl/mdlmock.dart' as mdlmock;

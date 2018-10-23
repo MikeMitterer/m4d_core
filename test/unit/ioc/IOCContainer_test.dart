@@ -2,12 +2,8 @@
 // unit
 library test.unit.ioccontainer;
 
-import 'dart:convert';
-
 import 'package:test/test.dart';
 import 'package:m4d_core/m4d_ioc.dart';
-
-import 'package:logging/logging.dart';
 
 abstract class _BaseTestClass {}
 
