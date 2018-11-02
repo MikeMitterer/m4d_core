@@ -55,7 +55,7 @@ class Service {
     /// Very basic type-check (Instance, Function, Json)
     final ServiceType type;
 
-    Service(this.name, this.type);
+    const Service(this.name, this.type);
 
     @override
     bool operator ==(Object other) =>

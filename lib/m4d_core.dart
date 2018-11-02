@@ -35,11 +35,10 @@ import 'package:validate/validate.dart';
 import 'core/interfaces.dart';
 import 'services.dart' as service;
 import 'm4d_ioc.dart' as ioc;
+import 'm4d_utils.dart';
 
 export 'core/annotations.dart';
 export 'core/interfaces.dart';
-
-part "core/utils.dart";
 
 part "core/MdlEventListener.dart";
 
@@ -47,6 +46,11 @@ part "core/MdlComponent.dart";
 part "core/MdlComponentHandler.dart";
 part "core/MdlConfig.dart";
 part 'core/DomRenderer.dart';
+
+part 'observable/ObservableList.dart';
+part 'observable/ObservableProperty.dart';
+
+part "core/utils.dart";
 
 abstract class MdlDataConsumer {
     void consume(final data);

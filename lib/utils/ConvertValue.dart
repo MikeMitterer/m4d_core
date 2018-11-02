@@ -40,6 +40,10 @@ class ConvertValue {
     }
 
     static int toInt(final value) {
+        if(value == null) {
+            return 0;
+        }
+
         if(value is int) {
             return value;
         }
@@ -51,6 +55,10 @@ class ConvertValue {
     }
 
     static double toDouble(final value) {
+        if(value == null) {
+            return 0.0;
+        }
+
         if(value is double) {
             return value;
         }
@@ -59,6 +67,13 @@ class ConvertValue {
         }
         final String stringvalue = "$value".toLowerCase();
         return num.parse(stringvalue).toDouble();
+    }
+
+    static String toStringValue(final value) {
+        if(value == null) {
+            return "";
+        }
+        return value.toString();
     }
 
     /// Removes ' and " around the give value

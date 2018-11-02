@@ -23,9 +23,33 @@
  */
 library m4d_utils;
 
+import 'dart:async';
+
 // import 'package:logging/logging.dart';
 import 'package:validate/validate.dart';
 
 part 'utils/StringToFunction.dart';
 part "utils/ConvertValue.dart";
+
+/// Waits until [test] returns true
+///
+/// Can be used to test if an element is already in the DOM
+Future<int> waitUntil(bool test(),{
+    final int maxIterations: 100,
+    final Duration step: const Duration(milliseconds: 10) }) async {
+
+    int iterations = 0;
+    for(;iterations < maxIterations;iterations++) {
+        await Future.delayed(step);
+        if(test()) {
+            break;
+        }
+    }
+    if(iterations >= maxIterations) {
+        throw TimeoutException(
+            "Condition not reached within ${iterations * step.inMilliseconds}ms");
+    }
+    return iterations;
+}
+
 
