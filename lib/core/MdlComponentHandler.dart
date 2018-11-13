@@ -236,77 +236,35 @@ class MdlComponentHandler {
 
     //- DI ----------------------------------------------------------------------------------------
 
-    /**
-     * Upgrades all registered components found in the current DOM. This
-     * should be called in your main-function.
-     * At the beginning of the upgrade-process it adds the css-classes
-     * mdl-js, mdl-dart and mdl-upgrading to the <html>-element.
-     * If all components are ready it removes mdl-upgrading.
-     *
-     * Sample:
-     *        main() {
-     *        registerMdl();
-     *
-     *        componentFactory().run().then( (_) {
-     *
-     *              });
-     *        }
-     */
-    Future<T> run<T>( { final enableVisualDebugging: false } ) async {
+    /// Upgrades all registered components found in the current DOM. This
+    /// should be called in your main-function.
+    /// At the beginning of the upgrade-process it adds the css-classes
+    /// mdl-js, mdl-dart and mdl-upgrading to the <html>-element.
+    /// If all components are ready it removes mdl-upgrading.
+    ///
+    /// Sample:
+    ///       main() {
+    ///       registerMdl();
+    ///
+    ///       componentFactory().run().then( (_) {
+    ///
+    ///             });
+    ///       }
+    ///
+    Future<T> upgrade<T>( { final enableVisualDebugging: false } ) async {
         final dom.Element body = dom.querySelector("body");
 
         _enableVisualDebugging = enableVisualDebugging;
-        //_modules.add(new Module()..bind(DomRenderer));
-
-        // _injector = _createInjector();
-
         await upgradeElement(body);
-
-//        return upgradeElement(body).then((_) => new Future<MaterialApplication>(() {
-//                return _injector.getInstance(MaterialApplication) as MaterialApplication;
-//        }));
 
         return application as T;
     }
 
-
-//    /**
-//     * In most cases this is your AppController
-//     *
-//     * Sample:
-//     *        @inject
-//     *        class AppController {
-//     *
-//     *        }
-//     *
-//     *        main() {
-//     *        registerMdl();
-//     *
-//     *        componentFactory().rootContext(AppController).run().then( (final Injector injector) {
-//     *                  new AppController();
-//     *              });
-//     *        }
-//     */
-//    MdlComponentHandler rootContext(final Type rootContext) {
-//        _modules.add(new _ApplicationModule(rootContext));
-//        return this;
-//    }
-//
-//    /// Add your App-specific modules
-//    MdlComponentHandler addModule(final Module module) {
-//        if(_modules.indexOf(module) == -1) {
-//            _modules.add(module);
-//        }
-//        return this;
-//    }
-
-//    /// Returns the injector for this module.
-//    Injector get injector {
-//        if(_injector == null) {
-//            _injector = _createInjector();
-//        }
-//        return _injector;
-//    }
+    /// Run is depreciated, please use [upgrade] instead
+    /// 
+    @deprecated
+    Future<T> run<T>( { final enableVisualDebugging: false } )
+        => upgrade(enableVisualDebugging: enableVisualDebugging);
 
     /**
      * Returns your Application-Object.
