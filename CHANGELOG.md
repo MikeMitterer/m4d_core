@@ -4,6 +4,7 @@ Material Design 4 Dart
 ## [Unreleased](http://github.com/mikemitterer/m4d_core/compare/v0.1...HEAD)
 
 ### Feature
+* IOC-Container can register Events [1b090bf](https://github.com/mikemitterer/m4d_core/commit/1b090bf46bf60ac351ea5d2cbd5612cce11b9a6d)
 * Added some DOM-Helper functions [bfac090](https://github.com/mikemitterer/m4d_core/commit/bfac09091374eed4a6b13f78e885c6c348b9bcd0)
 * Added ObservableProperty and ObservableList [7e0120a](https://github.com/mikemitterer/m4d_core/commit/7e0120ac086b20f9560c52f8843ba4cbc96517e4)
 * ObservableProperty added [6e0f459](https://github.com/mikemitterer/m4d_core/commit/6e0f4597f47f78ad19a6a1e38f306cb721950e25)
