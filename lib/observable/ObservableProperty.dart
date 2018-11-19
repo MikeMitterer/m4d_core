@@ -29,7 +29,7 @@ class PropertyChangeEvent<T> {
 typedef T ResetObserver<T>();
 
 // TODO: Funktioniert nur mit dart2js - nicht mit ddc: https://github.com/dart-lang/sdk/issues/33552
-typedef String FormatObservedValue<T>(final T value, final original);
+typedef String FormatObservedValue<T>(final T value, final original,{ final String format });
 typedef T StaticCast<T>(final value);
 
 class ObservableProperty<T> {

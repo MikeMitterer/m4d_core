@@ -47,6 +47,9 @@ part "core/MdlComponentHandler.dart";
 part "core/MdlConfig.dart";
 part 'core/DomRenderer.dart';
 
+part 'core/dom/DataAttibute.dart';
+part 'core/dom/ElementProperties.dart';
+
 part 'observable/ObservableList.dart';
 part 'observable/ObservableProperty.dart';
 
