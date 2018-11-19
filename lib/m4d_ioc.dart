@@ -22,6 +22,7 @@ library m4d_ioc;
 import 'package:validate/validate.dart';
 
 typedef Map<String, dynamic> ToJson();
+typedef Map<String, Function> ToEvents();
 
 abstract class Binder {
     void bind();
@@ -118,6 +119,8 @@ class BindingSyntax {
 
     void toJson(ToJson callback) => _JsonBinder(_service, callback).bind();
 
+    void toEvents(ToEvents callback) => _EventsBinder(_service, callback).bind();
+
     BindingSyntax._private(this._service);
 }
 
@@ -180,6 +183,23 @@ class _JsonBinder extends Binder {
         Validate.notNull(_callback);
         Validate.isTrue(_service.type == ServiceType.Json);
         Validate.isTrue(_callback is ToJson);
+
+        IOCContainer()._services[_service] = _callback;
+    }
+}
+
+class _EventsBinder extends Binder {
+    final Service _service;
+    final ToEvents _callback;
+
+    _EventsBinder(this._service,this._callback);
+
+    @override
+    void bind() {
+        Validate.notNull(_service);
+        Validate.notNull(_callback);
+        Validate.isTrue(_service.type == ServiceType.Function);
+        Validate.isTrue(_callback is ToEvents);
 
         IOCContainer()._services[_service] = _callback;
     }
