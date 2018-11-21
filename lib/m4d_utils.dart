@@ -52,4 +52,26 @@ Future<int> waitUntil(bool test(),{
     return iterations;
 }
 
+/// If responseText is a HTML-Page with header and body the contents within "body" will be extracted
+String sanitizeResponseText(final String responseText) {
+    if(!responseText.contains(new RegExp(r"<body[^>]*>",multiLine: true,caseSensitive: false))) {
+        return responseText;
+    }
+
+    final String sanitized = responseText.replaceFirstMapped(
+        new RegExp(
+            r"(?:.|\n|\r)*" +
+                r"<body[^>]*>([^<]*(?:(?!<\/?body)<[^<]*)*)<\/body[^>]*>" +
+                r"(?:.|\n|\r)*",
+            multiLine: true, caseSensitive: false),
+            (final Match m) {
+
+            //return '<div class="errormessage">${m[1]}</div>';
+            return m[1];
+        });
+
+    //_logger.info("Sanitized: $sanitized");
+    return sanitized;
+}
+
 
