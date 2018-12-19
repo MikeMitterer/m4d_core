@@ -22,7 +22,7 @@ part of m4d_core;
 abstract class MdlComponent extends Object with MdlEventListener {
     final Logger _logger = new Logger('mdlcore.MdlComponent');
 
-    final ioc.IOCContainer injector;
+    final ioc.Container injector;
 
     /// This is the element witch has the mdl-js- class
     final dom.Element element;

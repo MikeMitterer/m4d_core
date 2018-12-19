@@ -46,7 +46,7 @@ class SlowComponent extends MdlComponent {
 
     static const _SlowComponentCssClasses _cssClasses = const _SlowComponentCssClasses();
 
-    SlowComponent.fromElement(final dom.HtmlElement element,final ioc.IOCContainer iocContainer)
+    SlowComponent.fromElement(final dom.HtmlElement element,final ioc.Container iocContainer)
         : super(element,iocContainer) {
         _init();
     }
@@ -93,7 +93,7 @@ class SlowComponent extends MdlComponent {
 void registerSlowComponent() {
     final MdlConfig config = new MdlWidgetConfig<SlowComponent>(
         _SlowComponentConstant.WIDGET_SELECTOR,
-            (final dom.HtmlElement element,final ioc.IOCContainer iocContainer)
+            (final dom.HtmlElement element,final ioc.Container iocContainer)
                 => new SlowComponent.fromElement(element,iocContainer)
     );
     

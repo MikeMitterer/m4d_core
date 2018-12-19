@@ -90,7 +90,7 @@ class MdlComponentHandler {
 
     //final List<Module> _modules = new List<Module>();
 
-    final _iocContainer = ioc.IOCContainer();
+    final _iocContainer = ioc.Container();
 
     /// If set to true it
     bool _enableVisualDebugging = false;
