@@ -1,9 +1,10 @@
 # Change Log for m4d_core
 Material Design 4 Dart
 
-## [Unreleased](http://github.com/mikemitterer/m4d_core/compare/v0.1...HEAD)
+## [v0.2](http://github.com/mikemitterer/m4d_core/compare/v0.1...v0.2) - 2018-12-19
 
 ### Feature
+* ioc-Container is more typesafe [a653946](https://github.com/mikemitterer/m4d_core/commit/a653946edd8df74340f47fc5a5ba925d666f8347)
 * IOC-Container can register Events [1b090bf](https://github.com/mikemitterer/m4d_core/commit/1b090bf46bf60ac351ea5d2cbd5612cce11b9a6d)
 * Added some DOM-Helper functions [bfac090](https://github.com/mikemitterer/m4d_core/commit/bfac09091374eed4a6b13f78e885c6c348b9bcd0)
 * Added ObservableProperty and ObservableList [7e0120a](https://github.com/mikemitterer/m4d_core/commit/7e0120ac086b20f9560c52f8843ba4cbc96517e4)
