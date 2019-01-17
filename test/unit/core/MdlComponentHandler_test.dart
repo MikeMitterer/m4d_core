@@ -22,7 +22,7 @@ main() async {
         });
         
         test('> Register Application', () async {
-            final app = await componentHandler().run<MySpecialApplication>();
+            final app = await componentHandler().upgrade<MySpecialApplication>();
             expect(app, isNotNull);
             expect(app is MySpecialApplication, isTrue);
             expect(app.id, "MySpecialApplication");

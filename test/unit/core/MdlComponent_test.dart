@@ -17,7 +17,7 @@ import "package:console_log_handler/console_log_handler.dart";
 part 'lib/SlowComponent.dart';
 
 main() async {
-    final Logger _logger = new Logger("test.MdlComponent");
+    // final Logger _logger = new Logger("test.MdlComponent");
 
     //initializeReflectable();
     configLogging();
@@ -37,7 +37,7 @@ main() async {
     group('MdlComponent', () {
         setUp(() async {
             await registerSlowComponent();
-            await componentHandler().run();
+            await componentHandler().upgrade();
 
 //            mdlmock.setUpInjector();
 //
