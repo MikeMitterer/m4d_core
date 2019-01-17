@@ -1,6 +1,11 @@
 # Change Log for m4d_core
 Material Design 4 Dart
 
+## [Unreleased](http://github.com/mikemitterer/m4d_core/compare/v0.2...HEAD)
+
+### Refactor
+* Changed 'componentHandler().run to ...uprgrade() [7cdfdca](https://github.com/mikemitterer/m4d_core/commit/7cdfdca574bac1e142ca1ae4429d69fa98b74789)
+
 ## [v0.2](http://github.com/mikemitterer/m4d_core/compare/v0.1...v0.2) - 2018-12-19
 
 ### Feature
