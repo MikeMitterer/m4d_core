@@ -3,6 +3,9 @@ Material Design 4 Dart
 
 ## [Unreleased](http://github.com/mikemitterer/m4d_core/compare/v0.2...HEAD)
 
+### Feature
+* Added helper function to convert a service to a string (serviceAsString) [2f2715a](https://github.com/mikemitterer/m4d_core/commit/2f2715afc7d684fca7b208b365a0785314496af8)
+
 ### Refactor
 * Changed 'componentHandler().run to ...uprgrade() [7cdfdca](https://github.com/mikemitterer/m4d_core/commit/7cdfdca574bac1e142ca1ae4429d69fa98b74789)
 
