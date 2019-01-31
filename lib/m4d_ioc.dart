@@ -203,6 +203,25 @@ class ContainerResolveSyntax {
     dynamic get untyped => _data;
 }
 
+/// Helper to resolves String-Service as String
+///
+/// E.g. Used to resolve URLs
+///
+///     const MyFancyURL  = Service<AsString>("test.unit.ioccontainer",ServiceType.Function);
+///
+///     bind(MyFancyURL)
+///         .toFunction<String>(() => "http://www.myhost.at/api/v1/jobs");
+///
+///     String get _myUrl => serviceAsString(MyFancyURL);
+String serviceAsString(final Service<AsString> service) {
+    final function = service.resolve();
+    if(function == null) {
+        return "${service.name}:undefined";
+    }
+    return function();
+}
+
+
 class _InstanceBinder extends Binder {
     final Service _service;
     final Object _implementation;

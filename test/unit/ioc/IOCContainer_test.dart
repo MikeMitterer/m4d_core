@@ -268,7 +268,23 @@ main() async {
             //final testclass = con
 
         }); // end of 'Module with depenency' test
-
     }); // End of '' group
+
+    group("Tools", () {
+        setUp(() {});
+        tearDown(() {
+            container.clear();
+        });
+
+        test('> Resolve Service as String', () {
+            const url = "http://www.myhost.at/api/v1/jobs";
+            const MyFancyURL  = Service<AsString>("test.unit.ioccontainer",ServiceType.Function);
+
+            container.bind(MyFancyURL).toFunction<String>(() => url);
+
+            expect(serviceAsString(MyFancyURL), url);
+        });
+
+    });
 }
 
