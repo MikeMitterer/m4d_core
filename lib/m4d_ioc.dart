@@ -25,6 +25,7 @@ import 'package:validate/validate.dart';
 typedef Map<String, dynamic> ToJson();
 typedef Map<String, Function> ToEvents();
 typedef String AsString();
+typedef T InstanceFactory<T>();
 
 Container _container = Container();
 
@@ -137,11 +138,15 @@ class InstanceService extends Service {
   InstanceService(final String name) : super(name, ServiceType.Instance);
 }
 
+/// ServiceProvider acts as a Singleton-Factory
 class ServiceProvider<T> {
-    final T _instance;
-    ServiceProvider(this._instance);
+    static dynamic _instance = null;
+    
+    InstanceFactory<T> _factory;
 
-    T get() => _instance;
+    ServiceProvider(this._factory);
+
+    T get() => _instance ??= _factory();
 }
 
 /// [Container] is a singleton

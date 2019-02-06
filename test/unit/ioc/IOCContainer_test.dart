@@ -12,10 +12,12 @@ abstract class JsonSerializer {
 }
 
 class _TestClass extends _BaseTestClass implements JsonSerializer {
+    static int instanceCounter = 0;
+
     final String firstname;
     final String lastname;
 
-    _TestClass(this.firstname, this.lastname);
+    _TestClass(this.firstname, this.lastname) { instanceCounter++; }
 
     @override
     Map<String, dynamic> toJson() =>
@@ -24,6 +26,7 @@ class _TestClass extends _BaseTestClass implements JsonSerializer {
 
 final TestService            = Service<_TestClass>("test.unit.ioccontainer.TestService", ServiceType.Instance);
 final TestProvider           = Service<ServiceProvider<_TestClass>>("test.unit.ioccontainer.TestProvider", ServiceType.Provider);
+final TestProvider2          = Service<ServiceProvider<_TestClass>>("test.unit.ioccontainer.TestProvider2", ServiceType.Provider);
 final TestServiceForFunction = Service<Function>("test.unit.ioccontainer.Function", ServiceType.Function);
 final TestServiceFirstName   = Service<AsString>("test.unit.ioccontainer.FirstName", ServiceType.Function);
 final TestServiceLastName    = Service<AsString>("test.unit.ioccontainer.LastName", ServiceType.Function);
@@ -67,7 +70,9 @@ main() async {
     final container = Container();
 
     group('Container', () {
-        setUp(() {});
+        setUp(() {
+            _TestClass.instanceCounter = 0;
+        });
         tearDown(() {
             container.clear();
         });
@@ -162,6 +167,29 @@ main() async {
             expect(tc2.lastname, "Mitterer");
 
         }); // end of 'Provider I' test
+
+        test('> ServiceProvider with Factory-CTOR should produce only one instance', () {
+            expect(_TestClass.instanceCounter, 0);
+
+            TestProvider2.bind.to(ServiceProvider<_TestClass>(()
+                => _TestClass("Gerda", "Riedmann")));
+
+            // Factory function was not called because we did not execute "get"
+            expect(_TestClass.instanceCounter, 0);
+
+            final tc = TestProvider2.resolve().get();
+            expect(tc.firstname, "Gerda");
+            expect(tc.lastname, "Riedmann");
+            expect(_TestClass.instanceCounter, 1);
+
+            [1,2,3,4,5].forEach((_) {
+                final tc = TestProvider2.resolve().get();
+                expect(tc.firstname, "Gerda");
+                expect(tc.lastname, "Riedmann");
+                expect(_TestClass.instanceCounter, 1);
+            });
+
+        });
 
         test('> Service mapper', () {
             TestProvider.bind.to(TestServiceProvider());
