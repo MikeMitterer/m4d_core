@@ -4,6 +4,7 @@ Material Design 4 Dart
 ## [Unreleased](http://github.com/mikemitterer/m4d_core/compare/v0.2...HEAD)
 
 ### Feature
+* Bind directly to Service - makes the whole thing typesafe [99296d3](https://github.com/mikemitterer/m4d_core/commit/99296d3a2b280b96fa05e8a69ef97d5b46c08468)
 * Added helper function to convert a service to a string (serviceAsString) [2f2715a](https://github.com/mikemitterer/m4d_core/commit/2f2715afc7d684fca7b208b365a0785314496af8)
 
 ### Refactor
