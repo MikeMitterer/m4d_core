@@ -32,14 +32,16 @@ final TestServiceForToJson   = Service<ToJson>("test.unit.ioccontainer.ToJson", 
 class TestModule extends Module {
     @override
     configure() {
-        bind(TestService).to(_TestClass("Gerda", "Riemann"));
+        TestService.bind.to(_TestClass("Gerda", "Riemann"));
+        //bind(TestService).to(_TestClass("Gerda", "Riemann"));
     }
 }
 
 class TestModuleWithDependency extends Module {
     @override
     configure() {
-        bind(TestServiceForFunction).toFunction(() => 99);
+        TestServiceForFunction.bind.to(() => 99);
+        //bind(TestServiceForFunction).toFunction(() => 99);
     }
 
     @override
@@ -48,22 +50,11 @@ class TestModuleWithDependency extends Module {
 
 class TestServiceProvider implements ServiceProvider<_TestClass> {
 
-    final _ioc = Container();
-
     @override
     _TestClass get() => _TestClass(_firstname, _lastname);
 
-    String get _firstname => _service(TestServiceFirstName);
-    String get _lastname => _service(TestServiceLastName);
-
-    /// Checks for unregistered services!
-    String _service(final Service service) {
-        final function = _ioc.resolve(service).as<AsString>();
-        if(function == null) {
-            return "${service.name}:undefined";
-        }
-        return function();
-    }
+    String get _firstname => TestServiceFirstName.toString();
+    String get _lastname => TestServiceLastName.toString();
 }
 
 main() async {
@@ -82,23 +73,22 @@ main() async {
         });
 
         test('> Unregister', () {
-            container.bind(TestService).to(_TestClass("Mike", "Mitterer"));
+            TestService.bind.to(_TestClass("Mike", "Mitterer"));
 
-            var object = container.resolve(TestService).as<_TestClass>();
+            var object = TestService.resolve();
             expect(object, isNotNull);
 
             print(object.runtimeType);
             expect(object is _TestClass, isTrue);
 
             container.unregister(TestService);
-            object = container
-                .resolve(TestService)
-                .untyped;
+            object = TestService.resolve();
             expect(object, isNull);
+
         }); // end of 'Unregister' test
 
         test('> Resolve via Service', () {
-            container.bind(TestService).to(_TestClass("James", "Bond"));
+            TestService.bind.to(_TestClass("James", "Bond"));
 
             final object = TestService.resolve(); //.asInstance();
 
@@ -109,11 +99,11 @@ main() async {
         }); // end of 'Resolve via Service' test
 
         test('> Bind the same Service', () {
-            container.bind(TestService).to(_TestClass("Mike", "Mitterer"));
-            container.bind(TestService).to(_TestClass("Sarah", "Riedmann"));
+            TestService.bind.to(_TestClass("Mike", "Mitterer"));
+            TestService.bind.to(_TestClass("Sarah", "Riedmann"));
             expect(container.nrOfServices, 1);
 
-            final object = container.resolve(TestService).as<_TestClass>();
+            final object = TestService.resolve();
             expect(object.firstname, "Sarah");
 
             final object2 = TestService.resolve();
@@ -122,20 +112,7 @@ main() async {
 
         test('> Register a function', () {
             num counter = 0;
-            container.bind(TestServiceForFunction).toFunction<String>(() {
-                return "abc${counter++}";
-            });
-
-            final object = container.resolve(TestServiceForFunction).as<Function>();
-
-            expect(object is Function, isTrue);
-            expect(object(), "abc0");
-            expect(object(), "abc1");
-        }); // end of 'Register a function' test
-
-        test('> Resolve function via Service-Object', () {
-            num counter = 0;
-            container.bind(TestServiceForFunction).toFunction<String>(() {
+            TestServiceForFunction.bind.to(() {
                 return "abc${counter++}";
             });
 
@@ -144,86 +121,55 @@ main() async {
             expect(object is Function, isTrue);
             expect(object(), "abc0");
             expect(object(), "abc1");
-        }); // end of 'Resolve function via Service-Object' test
+        }); // end of 'Register a function' test
 
-        test('> Register toJson-callback', () {
-            container.bind(TestServiceForToJson).toJson(() {
-                return <String, dynamic>{ 'name': "Mike"};
-            });
-
-            var object = container.resolve(TestServiceForToJson).as<ToJson>();
-            expect(object is ToJson, isTrue);
-            expect(object().containsKey("name"), isTrue);
-            expect(object()["name"], "Mike");
-        }); // end of 'Register toJson-callback' test
-
-        test('> toJson-callback via Service-Object', () {
-            container.bind(TestServiceForToJson).toJson(() {
+        test('> Register toJson-callback directly to service', () {
+            TestServiceForToJson.bind.to(() {
                 return <String, dynamic>{ 'name': "Mike"};
             });
 
             var object = TestServiceForToJson.resolve();
+            expect(object, isNotNull);
             expect(object is ToJson, isTrue);
             expect(object().containsKey("name"), isTrue);
             expect(object()["name"], "Mike");
-        }); // end of 'toJson-callback via Service-Object' test
+
+            expect(TestServiceForToJson.toString(), '{"name":"Mike"}');
+        });
 
         test('> Serializer', () {
-            container.bind(TestService).to(_TestClass("Mike", "Mitterer"));
+            TestService.bind.to(_TestClass("Mike", "Mitterer"));
 
-            var object = container.resolve(TestService).as<JsonSerializer>();
+            // var object = container.resolve(TestService).as<JsonSerializer>();
+            var object = TestService.as.subclass<JsonSerializer>();
             expect(object.toJson()["lastname"], "Mitterer");
         }); // end of 'Serializer' test
 
-        test('> Serializer via Service-Object', () {
-            container.bind(TestService).to(_TestClass("Mike", "Mitterer"));
-
-            var object = TestService.to.subclass<JsonSerializer>();
-            expect(object.toJson()["lastname"], "Mitterer");
-        }); // end of 'Serializer via Service-Object' test
-
         test('> Provider I', () {
-            container.bind(TestProvider).to(TestServiceProvider());
+            TestProvider.bind.to(TestServiceProvider());
 
-            final tc1 = container.resolve(TestProvider).asProvider<_TestClass>().get();
+            final tc1 = TestProvider.resolve().get();
 
             expect(tc1, isNotNull);
-            expect(tc1.firstname, "test.unit.ioccontainer.FirstName:undefined");
-            expect(tc1.lastname, "test.unit.ioccontainer.LastName:undefined");
+            expect(tc1.firstname, "test.unit.ioccontainer.FirstName:ServiceType.Function:<undefined>");
+            expect(tc1.lastname, "test.unit.ioccontainer.LastName:ServiceType.Function:<undefined>");
 
-            container.bind(TestServiceFirstName).toFunction<String>(() => "Mike");
-            container.bind(TestServiceLastName).toFunction<String>(() => "Mitterer");
+            TestServiceFirstName.bind.to(() => "Mike");
+            TestServiceLastName.bind.to(() => "Mitterer");
 
-            final tc2 = container.resolve(TestProvider).asProvider<_TestClass>().get();
+            final tc2 = TestProvider.resolve().get();;
             expect(tc2.firstname, "Mike");
             expect(tc2.lastname, "Mitterer");
 
         }); // end of 'Provider I' test
 
-        test('> Provider via Service-Object', () {
-            container.bind(TestProvider).to(TestServiceProvider());
-
-            final tc1 = TestProvider.resolve().get();
-
-            expect(tc1, isNotNull);
-            expect(tc1.firstname, "test.unit.ioccontainer.FirstName:undefined");
-            expect(tc1.lastname, "test.unit.ioccontainer.LastName:undefined");
-
-            container.bind(TestServiceFirstName).toFunction<String>(() => "Mike");
-            container.bind(TestServiceLastName).toFunction<String>(() => "Mitterer");
-
-            final tc2 = TestProvider.resolve().get();
-            expect(tc2.firstname, "Mike");
-            expect(tc2.lastname, "Mitterer");
-        }); // end of 'Provider via Service-Object' test
-
         test('> Service mapper', () {
-            container.bind(TestProvider).to(TestServiceProvider());
+            TestProvider.bind.to(TestServiceProvider());
 
-            container.bind(TestServiceFirstName).toFunction<String>(() => "Mike");
-            container.bind(TestServiceLastName).toFunction<String>(() => "Mitterer");
+            TestServiceFirstName.bind.to(() => "Mike");
+            TestServiceLastName.bind.to(() => "Mitterer");
 
-            final tc = TestProvider.to.map((ServiceProvider<_TestClass> sp)
+            final tc = TestProvider.as.map((ServiceProvider<_TestClass> sp)
                 => "${sp.get().firstname} ${sp.get().lastname}");
 
             expect(tc, "Mike Mitterer");
@@ -231,10 +177,24 @@ main() async {
         }); // end of 'Service mapper' test
 
         test('> Provider with wrong Type', () {
+
+            // Wird vom Analyzer erkannt!
+            // TestProvider.bind.to(_TestClass("Mike", "Mitterer");
+
             expect(() => container.bind(TestProvider).to(_TestClass("Mike", "Mitterer")),
                 throwsA(TypeMatcher<TypeError>()));
 
         }); // end of 'Provider I' test
+
+        test('> Bind directly to Service', () {
+            TestProvider.bind.to(TestServiceProvider());
+
+            final obj = TestProvider.resolve().get();
+            expect(obj, TypeMatcher<_TestClass>());
+
+            final obj2 = container.resolve(TestProvider).as<TestServiceProvider>().get();
+            expect(obj2, TypeMatcher<_TestClass>());
+        });
 
     });
     // End of 'Container.dat' group
@@ -246,9 +206,11 @@ main() async {
         });
 
         test('> Register via Module', () {
-            final container = Container.bindModules([ TestModule()]);
+            Container.bindModules([
+                TestModule()
+            ]);
 
-            var object = container.resolve(TestService).as<_TestClass>();
+            var object = TestService.as.subclass<_TestClass>();
             expect(object.firstname, "Gerda");
         }); // end of 'Register via Module' test
 
@@ -256,14 +218,16 @@ main() async {
             // After clear in TearDown
             expect(container.nrOfServices, 0);
 
-            Container.bindModules([ TestModuleWithDependency()]);
+            Container.bindModules([
+                TestModuleWithDependency()
+            ]);
 
             expect(container.nrOfServices, 2);
 
-            final testclass = container.resolve(TestService).as<_TestClass>();
+            final testclass = TestService.as.subclass<_TestClass>();
             expect(testclass.firstname, "Gerda");
 
-            final function = container.resolve(TestServiceForFunction).as<Function>();
+            final function = TestServiceForFunction.resolve();
             expect(function(), 99);
             //final testclass = con
 
@@ -278,11 +242,12 @@ main() async {
 
         test('> Resolve Service as String', () {
             const url = "http://www.myhost.at/api/v1/jobs";
-            const MyFancyURL  = Service<AsString>("test.unit.ioccontainer",ServiceType.Function);
+            final MyFancyURL = Service<AsString>("test.unit.ioccontainer",ServiceType.Function);
 
-            container.bind(MyFancyURL).toFunction<String>(() => url);
+            MyFancyURL.bind.to(() => url);
 
             expect(serviceAsString(MyFancyURL), url);
+            expect(MyFancyURL.toString(), url);
         });
 
     });

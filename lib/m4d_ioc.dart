@@ -19,6 +19,7 @@
 
 library m4d_ioc;
 
+import 'dart:convert';
 import 'package:validate/validate.dart';
 
 typedef Map<String, dynamic> ToJson();
@@ -39,6 +40,7 @@ enum ServiceType {
 }
 
 abstract class Module {
+    @deprecated
     BindingSyntax bind(final Service service) => _container.bind(service);
 
     configure();
@@ -60,7 +62,7 @@ class Service<R> {
     /// Very basic type-check (Instance, Function, Json)
     final ServiceType type;
 
-    const Service(this.name, this.type);
+    Service(this.name, this.type);
 
     @override
     bool operator ==(Object other) =>
@@ -76,7 +78,33 @@ class Service<R> {
         type.hashCode;
 
     R resolve() => ServiceResolveSyntax<R>(_container.raw(this))._as();
-    ServiceResolveSyntax<R> get to => ServiceResolveSyntax<R>(_container.raw(this));
+    ServiceResolveSyntax<R> get as => ServiceResolveSyntax<R>(_container.raw(this));
+
+    ServiceBindingSyntax<R> get bind => ServiceBindingSyntax<R>._private(this);
+
+    @override
+    String toString() {
+        final resolved = resolve();
+        if(resolved == null) {
+            return "${name}:${type}:<undefined>";
+
+        } else if(resolved is AsString) {
+            // ignore: unnecessary_cast
+            return (resolved as AsString)();
+
+        } else if(resolved is ToJson) {
+            // ignore: unnecessary_cast
+            return json.encode((resolved as ToJson)());
+        }
+        return "${name}:${type}:${resolved}";
+    }
+}
+
+class ServiceBindingSyntax<T> {
+    Service<T> _service;
+
+    void to(final T implementation) => _container._bind(_service).to(implementation);
+    ServiceBindingSyntax._private(this._service);
 }
 
 class ServiceResolveSyntax<R> {
@@ -139,11 +167,13 @@ class Container {
     Container._private();
 
     /// Binds a Service-ID ([service]) to its implementation
-    BindingSyntax bind(final Service service) {
-        Validate.notNull(service);
-        return BindingSyntax._private(service);
-    }
+    ///
+    /// This function is deprecated.
+    /// Use Service.bind.to() instead
+    @deprecated
+    BindingSyntax bind(final Service service) => _bind(service);
 
+    @deprecated
     ContainerResolveSyntax resolve(final Service service) => ContainerResolveSyntax(raw(service));
 
     dynamic raw(final Service service) => _services[service];
@@ -153,19 +183,24 @@ class Container {
     void clear() => _services.clear();
 
     int get nrOfServices => _services.length;
+
+    BindingSyntax _bind(final Service service) {
+        Validate.notNull(service);
+        return BindingSyntax._private(service);
+    }
 }
 
 class BindingSyntax<T> {
     Service _service;
 
-    void to(final Object implementation) {
-//        if(_service.rtType != null) {
-//            Validate.isTrue(_service.rtType is implementation.runtimeType)
-//        }
-        if(_service.type == ServiceType.Instance) {
-            _InstanceBinder(_service, implementation).bind();
-        } else {
-            _ProviderBinder(_service, implementation).bind();
+    void to(final  implementation) {
+        switch(_service.type) {
+            case ServiceType.Provider:
+                _ProviderBinder<T>(_service, implementation).bind();
+                break;
+
+            default:
+                _InstanceBinder(_service, implementation).bind();
         }
     }
 
@@ -232,7 +267,7 @@ class _InstanceBinder extends Binder {
     void bind() {
         Validate.notNull(_service);
         Validate.notNull(_implementation);
-        Validate.isTrue(_service.type == ServiceType.Instance,
+        Validate.isTrue(_service.type != ServiceType.Provider,
             "You can bind ${_service.name} only to ${_service.type}");
 
         Validate.isTrue(_implementation is! Type,
@@ -243,9 +278,9 @@ class _InstanceBinder extends Binder {
     }
 }
 
-class _ProviderBinder extends Binder {
+class _ProviderBinder<T> extends Binder {
     final Service _service;
-    final ServiceProvider _implementation;
+    final ServiceProvider<T> _implementation;
 
     _ProviderBinder(this._service, this._implementation);
 
