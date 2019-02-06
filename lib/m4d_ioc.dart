@@ -27,7 +27,7 @@ typedef Map<String, Function> ToEvents();
 typedef String AsString();
 typedef T InstanceFactory<T>();
 
-Container _container = Container();
+//Container _container = Container();
 
 abstract class Binder {
     void bind();
@@ -42,7 +42,7 @@ enum ServiceType {
 
 abstract class Module {
     @deprecated
-    BindingSyntax bind(final Service service) => _container.bind(service);
+    BindingSyntax bind(final Service service) => Container().bind(service);
 
     configure();
 
@@ -78,8 +78,8 @@ class Service<R> {
         name.hashCode ^
         type.hashCode;
 
-    R resolve() => ServiceResolveSyntax<R>(_container.raw(this))._as();
-    ServiceResolveSyntax<R> get as => ServiceResolveSyntax<R>(_container.raw(this));
+    R resolve() => ServiceResolveSyntax<R>(Container().raw(this))._as();
+    ServiceResolveSyntax<R> get as => ServiceResolveSyntax<R>(Container().raw(this));
 
     ServiceBindingSyntax<R> get bind => ServiceBindingSyntax<R>._private(this);
 
@@ -104,7 +104,7 @@ class Service<R> {
 class ServiceBindingSyntax<T> {
     Service<T> _service;
 
-    void to(final T implementation) => _container._bind(_service).to(implementation);
+    void to(final T implementation) => Container()._bind(_service).to(implementation);
     ServiceBindingSyntax._private(this._service);
 }
 
@@ -279,7 +279,7 @@ class _InstanceBinder extends Binder {
             "You must bind a concrete class to '${_service.name}', "
                 "not a type! ($_implementation)");
 
-        _container._services[_service] = _implementation;
+        Container()._services[_service] = _implementation;
     }
 }
 
@@ -303,7 +303,7 @@ class _ProviderBinder<T> extends Binder {
             "You must bind a concrete class to '${_service.name}', "
                 "not a type! ($_implementation)");
 
-        _container._services[_service] = _implementation;
+        Container()._services[_service] = _implementation;
     }
 }
 
@@ -322,7 +322,7 @@ class _FunctionBinder<R> extends Binder {
         
         Validate.isTrue(_callback is R Function());
 
-        _container._services[_service] = _callback;
+        Container()._services[_service] = _callback;
     }
 }
 
@@ -339,7 +339,7 @@ class _JsonBinder extends Binder {
         Validate.isTrue(_service.type == ServiceType.Json);
         Validate.isTrue(_callback is ToJson);
 
-        _container._services[_service] = _callback;
+        Container()._services[_service] = _callback;
     }
 }
 
@@ -356,7 +356,7 @@ class _EventsBinder extends Binder {
         Validate.isTrue(_service.type == ServiceType.Function);
         Validate.isTrue(_callback is ToEvents);
 
-        _container._services[_service] = _callback;
+        Container()._services[_service] = _callback;
     }
 }
 
