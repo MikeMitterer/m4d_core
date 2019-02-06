@@ -7,6 +7,9 @@ Material Design 4 Dart
 * Bind directly to Service - makes the whole thing typesafe [99296d3](https://github.com/mikemitterer/m4d_core/commit/99296d3a2b280b96fa05e8a69ef97d5b46c08468)
 * Added helper function to convert a service to a string (serviceAsString) [2f2715a](https://github.com/mikemitterer/m4d_core/commit/2f2715afc7d684fca7b208b365a0785314496af8)
 
+### Bugs
+* Servic-CTOR was not const [93db395](https://github.com/mikemitterer/m4d_core/commit/93db3951e7294ce2c01d6c05385c92b7fc887d0c)
+
 ### Refactor
 * Changed 'componentHandler().run to ...uprgrade() [7cdfdca](https://github.com/mikemitterer/m4d_core/commit/7cdfdca574bac1e142ca1ae4429d69fa98b74789)
 
