@@ -12,6 +12,7 @@ Material Design 4 Dart
 * Servic-CTOR was not const [93db395](https://github.com/mikemitterer/m4d_core/commit/93db3951e7294ce2c01d6c05385c92b7fc887d0c)
 
 ### Refactor
+* Removed global _container variable [f57afce](https://github.com/mikemitterer/m4d_core/commit/f57afcedfd66ef3a643635479d7d7d1246c13b42)
 * Changed 'componentHandler().run to ...uprgrade() [7cdfdca](https://github.com/mikemitterer/m4d_core/commit/7cdfdca574bac1e142ca1ae4429d69fa98b74789)
 
 ## [v0.2](http://github.com/mikemitterer/m4d_core/compare/v0.1...v0.2) - 2018-12-19
