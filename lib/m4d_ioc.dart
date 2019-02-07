@@ -138,9 +138,9 @@ class InstanceService extends Service {
   InstanceService(final String name) : super(name, ServiceType.Instance);
 }
 
-/// ServiceProvider acts as a Singleton-Factory
+/// ServiceProvider acts as a Factory for T
 class ServiceProvider<T> {
-    static dynamic _instance = null;
+    T _instance = null;
     
     InstanceFactory<T> _factory;
 
