@@ -20,6 +20,7 @@
 library m4d_ioc;
 
 import 'dart:convert';
+import 'package:logging/logging.dart';
 import 'package:validate/validate.dart';
 
 typedef Map<String, dynamic> ToJson();
@@ -151,6 +152,8 @@ class ServiceProvider<T> {
 
 /// [Container] is a singleton
 class Container {
+    final Logger _logger = new Logger('m4d_ioc.Container');
+    
     static Container _singleton;
 
     final _services = Map<Service, dynamic>();
@@ -192,6 +195,14 @@ class Container {
     BindingSyntax _bind(final Service service) {
         Validate.notNull(service);
         return BindingSyntax._private(service);
+    }
+
+    void _rawBind(final Service service,final instance) {
+        if(_services.containsKey(service)) {
+            _logger.warning("Service '${service.name}' has "
+                "already a registered instance: ${_services[service]}!");
+        }
+        _services[service] = instance;
     }
 }
 
@@ -279,7 +290,7 @@ class _InstanceBinder extends Binder {
             "You must bind a concrete class to '${_service.name}', "
                 "not a type! ($_implementation)");
 
-        Container()._services[_service] = _implementation;
+        Container()._rawBind(_service,_implementation);
     }
 }
 
@@ -303,7 +314,7 @@ class _ProviderBinder<T> extends Binder {
             "You must bind a concrete class to '${_service.name}', "
                 "not a type! ($_implementation)");
 
-        Container()._services[_service] = _implementation;
+        Container()._rawBind(_service,_implementation);
     }
 }
 
@@ -322,7 +333,7 @@ class _FunctionBinder<R> extends Binder {
         
         Validate.isTrue(_callback is R Function());
 
-        Container()._services[_service] = _callback;
+        Container()._rawBind(_service, _callback);
     }
 }
 
@@ -339,7 +350,7 @@ class _JsonBinder extends Binder {
         Validate.isTrue(_service.type == ServiceType.Json);
         Validate.isTrue(_callback is ToJson);
 
-        Container()._services[_service] = _callback;
+        Container()._rawBind(_service, _callback);
     }
 }
 
@@ -356,7 +367,7 @@ class _EventsBinder extends Binder {
         Validate.isTrue(_service.type == ServiceType.Function);
         Validate.isTrue(_callback is ToEvents);
 
-        Container()._services[_service] = _callback;
+        Container()._rawBind(_service, _callback);
     }
 }
 
