@@ -4,6 +4,7 @@ Material Design 4 Dart
 ## [Unreleased](http://github.com/mikemitterer/m4d_core/compare/v0.2...HEAD)
 
 ### Feature
+* Warning if Service is already registered [d491e48](https://github.com/mikemitterer/m4d_core/commit/d491e48a573fe2caa9c12cbd27a799e5ca8ec2cf)
 * ServiceProvider acts as Singleton-Factory [2a5432a](https://github.com/mikemitterer/m4d_core/commit/2a5432a0744b5eaada71f66e34926f5bffb907ae)
 * Bind directly to Service - makes the whole thing typesafe [99296d3](https://github.com/mikemitterer/m4d_core/commit/99296d3a2b280b96fa05e8a69ef97d5b46c08468)
 * Added helper function to convert a service to a string (serviceAsString) [2f2715a](https://github.com/mikemitterer/m4d_core/commit/2f2715afc7d684fca7b208b365a0785314496af8)
