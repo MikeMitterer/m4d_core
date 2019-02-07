@@ -9,6 +9,7 @@ Material Design 4 Dart
 * Added helper function to convert a service to a string (serviceAsString) [2f2715a](https://github.com/mikemitterer/m4d_core/commit/2f2715afc7d684fca7b208b365a0785314496af8)
 
 ### Bugs
+* ServiceProvider as Singleton for all registered types lead to TypeErrors [7bbac31](https://github.com/mikemitterer/m4d_core/commit/7bbac31155840ec650f3c5d0ef747bf12f72e903)
 * Servic-CTOR was not const [93db395](https://github.com/mikemitterer/m4d_core/commit/93db3951e7294ce2c01d6c05385c92b7fc887d0c)
 
 ### Refactor
