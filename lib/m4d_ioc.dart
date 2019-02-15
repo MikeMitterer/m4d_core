@@ -79,7 +79,16 @@ class Service<R> {
         name.hashCode ^
         type.hashCode;
 
-    R resolve() => ServiceResolveSyntax<R>(Container().raw(this))._as();
+    R resolve() {
+        final result = ServiceResolveSyntax<R>(Container().raw(this))._as();
+    
+        if(result == null) {
+            throw ArgumentError("Can't resolve '${name}'! "
+                "Maybe you forgot to bind '${name}' or you havn't included the appropriate module");
+        }
+        return result;
+    }
+    
     ServiceResolveSyntax<R> get as => ServiceResolveSyntax<R>(Container().raw(this));
 
     ServiceBindingSyntax<R> get bind => ServiceBindingSyntax<R>._private(this);
@@ -199,7 +208,7 @@ class Container {
 
     void _rawBind(final Service service,final instance) {
         if(_services.containsKey(service)) {
-            _logger.warning("Service '${service.name}' has "
+            _logger.info("Service '${service.name}' has "
                 "already a registered instance: ${_services[service]}!");
         }
         _services[service] = instance;
