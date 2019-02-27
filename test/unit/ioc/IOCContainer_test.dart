@@ -87,8 +87,8 @@ main() async {
             expect(object is _TestClass, isTrue);
 
             container.unregister(TestService);
-            object = TestService.resolve();
-            expect(object, isNull);
+
+            expect(() => TestService.resolve(), throwsArgumentError);
 
         }); // end of 'Unregister' test
 
@@ -151,16 +151,10 @@ main() async {
         }); // end of 'Serializer' test
 
         test('> Provider I', () {
-            TestProvider.bind.to(TestServiceProvider());
-
-            final tc1 = TestProvider.resolve().get();
-
-            expect(tc1, isNotNull);
-            expect(tc1.firstname, "test.unit.ioccontainer.FirstName:ServiceType.Function:<undefined>");
-            expect(tc1.lastname, "test.unit.ioccontainer.LastName:ServiceType.Function:<undefined>");
-
             TestServiceFirstName.bind.to(() => "Mike");
             TestServiceLastName.bind.to(() => "Mitterer");
+
+            TestProvider.bind.to(TestServiceProvider());
 
             final tc2 = TestProvider.resolve().get();;
             expect(tc2.firstname, "Mike");
@@ -215,6 +209,9 @@ main() async {
         }); // end of 'Provider I' test
 
         test('> Bind directly to Service', () {
+            TestServiceFirstName.bind.to(() => "Mike");
+            TestServiceLastName.bind.to(() => "Mitterer");
+
             TestProvider.bind.to(TestServiceProvider());
 
             final obj = TestProvider.resolve().get();
